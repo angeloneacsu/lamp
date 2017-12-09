@@ -49,7 +49,7 @@ node {
 
     stage('Deploy images to Docker Swarm'){
         docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-             customApache.run()
+             sh 'echo test deploy'
         }
     }
 
