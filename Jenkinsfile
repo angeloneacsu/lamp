@@ -26,7 +26,7 @@ node {
   stage("MySQL Unit Test") {
       try {
           docker.image('mysql:5').withRun('-e "MYSQL_ROOT_PASSWORD=pass" -p 53306:3306') { c ->
-              sh 'while ! mysqladmin ping -h docker.angeloneacsu.com -u root -p pass -P 53306;do sleep 3; done'
+              sh 'while ! mysqladmin ping -h docker.angeloneacsu.com --user=root --password=pass -P 53306;do sleep 3; done'
               docker.image('mysql:5').inside("--link ${c.id}:db") {
                   sh 'CREATE DATABASE db1;'
                   sh 'CREATE TABLE x (n VARCHAR(20));'
