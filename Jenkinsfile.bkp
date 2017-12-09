@@ -1,6 +1,6 @@
 echo("Hello from Pipeline");
 
-node {
+node("master") {
   checkout scm
 
   stage("Building Apache Docker Image") {
@@ -23,18 +23,24 @@ node {
   }
 
 
-  stage("MySQL Unit Test") {
+  stage("Building MySQL Docker Image") {
       try {
-          docker.image('mysql:5').withRun('-e "MYSQL_ROOT_PASSWORD=pass" -p 53306:3306') { c ->
-              sh 'while ! mysqladmin ping -h 0.0.0.0 --silent;do sleep 1; done'
-              sh 'CREATE DATABASE db1;'
-          }
+          sh "./mysql/docker_build.sh"
       }
       catch(e) {
           error "Building Docker Image failed"
       }
   }
 
+
+  stage("MySQL Unit Test") {
+      try {
+          sh "./mysql/unit_test.sh"
+      }
+      catch(e) {
+          error "Unit Test failed"
+      }
+  }
 
 }
 

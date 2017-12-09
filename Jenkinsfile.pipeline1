@@ -1,0 +1,18 @@
+
+pipeline {
+    agent { dockerfile true }
+    stages {
+        stage('Mysql back-end') {
+            agent {
+                docker {
+                    image 'mysql:5.6'
+                    args '-p 53306:3306'
+                }
+            }
+            steps {
+               sh 'mysqladmin -h 0.0.0.0 -P 53306 -u root status'
+            }
+        }
+    }
+}
+
