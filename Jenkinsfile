@@ -2,7 +2,7 @@ echo("hello from Pipeline");
 
 env.DOCKERHUB_USERNAME = 'angeloneacsu'
 
-node("test") {
+node("master") {
   checkout scm
 
 
