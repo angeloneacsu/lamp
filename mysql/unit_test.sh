@@ -9,6 +9,10 @@ docker run -d --name lamp-mysql-unittest -p 3306:3306 docker.angeloneacsu.com/ki
 # because mysql runs inside jenkins container, it needs to know the external IP address of the lamp-apache container (ex: 44606)
 # we test DNS resolver as well ;)
 
+echo "Sleep at least 15 seconds... MySQL needs to initialize"
+
+sleep 15
+ 
 echo "Select * from T1"
 
 echo "select * from t1;" | mysql --host=docker.angeloneacsu.com --user=root --password=pass db1 
