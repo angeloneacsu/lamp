@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #docker run docker.angeloneacsu.com/kilabs/lamp-apache:latest echo "Unit test"
+docker rm -f lamp-mysql-unittest
 docker run -d --name lamp-mysql-unittest -p 3306:3306 docker.angeloneacsu.com/kilabs/lamp-mysql:latest 
 
 #apt-get update; apt-get install -y curl; 
