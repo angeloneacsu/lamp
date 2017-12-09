@@ -13,9 +13,8 @@ echo "Sleep at least 15 seconds... MySQL needs to initialize"
 
 sleep 15
  
-echo "Select * from T1"
-
-echo "select * from t1;" | mysql --host=docker.angeloneacsu.com --user=root --password=pass db1 
+echo "CREATE DATABASE db1; USE db1; CREATE TABLE x (n VARCHAR(20)); INSERT INTO TABLE x values ('muiecuceai'); SELECT * from x"
+echo "CREATE DATABASE db1; USE db1; CREATE TABLE x (n VARCHAR(20)); INSERT INTO TABLE x values ('muiecuceai'); SELECT * from x" | mysql --host=docker.angeloneacsu.com --user=root --password=pass 
 
 echo "Delete lamp-mysql-unittest container"
 docker rm -f lamp-mysql-unittest
