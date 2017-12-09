@@ -22,6 +22,19 @@ node("master") {
       }
   }
 
+  stage("Integration Test") {
+      try {
+          sh "./integration_test.sh"
+      }
+      catch(e) {
+          error "Integration Test FAILED !"
+      }
+      finally {
+          sh "docker rm -f docker.angeloneacsu.rom/kilabs/lamp-apache:latest || true"
+          sh "docker images -aq -f dangling=true | xargs docker rmi || true"
+      }
+  }
+
 
 }
 
