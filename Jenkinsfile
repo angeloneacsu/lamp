@@ -2,7 +2,7 @@ echo("Hello from Pipeline");
 
 env.DOCKER_REPO = 'docker.angeloneacsu.com'
 env.CLIENT = 'kilabs'
-env.PROJECT = lamp
+env.PROJECT = 'lamp'
 
 node {
     checkout scm
