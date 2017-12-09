@@ -1,1 +1,1 @@
-docker build -f Dockerfile -t angeloneacsu/lamp-apache:latest .
+docker build -f Dockerfile -t docker.angeloneacsu.com/kilabs/lamp-apache:latest .
