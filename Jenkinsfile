@@ -48,8 +48,8 @@ node {
     }
 
     stage('Build Apache docker image') {
-            //def customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
-            def customApache = docker.build("${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
+            def customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
+            //def customApache = docker.build("${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
     }
 
     stage('Push images to private repository'){
