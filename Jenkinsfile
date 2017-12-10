@@ -38,25 +38,25 @@ node {
 //
 // "docker stack deploy" requires ONLY API version 1.25. I have API >= 1.32
 //
-    //stage('Create Docker Compose'){
-    //        sh 'docker version'
-    //        sh 'echo Create docker-compose.yml'
-    //        sh './create-docker-compose.sh'                
-    //        sh 'cat stack-deploy.yml'
-    //}
+    stage('Create Docker Compose'){
+            sh 'docker version'
+            sh 'echo Create docker-compose.yml'
+            sh './create-docker-compose.sh'                
+            sh 'cat stack-deploy.yml'
+    }
 
-    //stage('Deploy images to Docker Swarm'){
-    //        docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-    //            sh 'docker stack deploy -c stack-deploy.yml LAMP'
-    //        }
-    //}
-
-// I can ONLY use "docker service create" on Swarm
-    stage('Deploy Apache Service into Docker Swarm'){
+    stage('Deploy images to Docker Swarm'){
             docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-                sh "docker service create --name lamp-apache --publish 50080:80 ${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}"
+                sh 'docker stack deploy -c stack-deploy.yml LAMP'
             }
     }
+
+// I can ONLY use "docker service create" on Swarm
+//    stage('Deploy Apache Service into Docker Swarm'){
+//            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+//                sh "docker service create --name lamp-apache --publish 50080:80 ${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}"
+//            }
+//    }
 
 // MySQL Stages
     stage('Build MySQL docker image') {
