@@ -26,8 +26,8 @@ node {
             customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
     }
 
-    stage('Push Apahce image to private repository'){
-        docker.withRegistry('http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}') {
+    stage('Push Apache docker image to private repository'){
+        docker.withRegistry(${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}) {
             customApache.push()
             customApache.push("latest")
         }
