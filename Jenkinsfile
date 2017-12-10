@@ -1,6 +1,8 @@
 echo("Hello from Pipeline");
 
-env.DOCKER_REPO = 'docker.angeloneacsu.com'
+env.DOCKER_SWARM_PROD = 'docker.angeloneacsu.com'
+env.DOCKER_HOST = 'tcp://${env.DOCKER_SWARM_PROD}:2375'
+env.DOCKER_REPO = '${env.DOCKER_SWARM_PROD}'
 env.DOCKER_REPO_PORT = '5000'
 env.CLIENT = 'kilabs'
 env.PROJECT = 'lamp'
@@ -47,7 +49,7 @@ node {
 
     stage('Deploy images to Docker Swarm'){
             docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-                sh 'docker stack deploy -c stack-deploy.yml LAMP'
+                sh 'DOCKER_HOST=${env.DOCKER_HOST} docker stack deploy -c stack-deploy.yml LAMP'
             }
     }
 
