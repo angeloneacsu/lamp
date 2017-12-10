@@ -8,7 +8,7 @@ env.CLIENT = 'kilabs'
 env.PROJECT = 'lamp'
 
 node {
-    def ApacheMicroservice
+    def ApacheImage
     def MysqlMicroservice
 
     stage('Clone repository') {
@@ -30,18 +30,20 @@ node {
         steps {
             script {
                 // docker.withServer("$DOCKER_SWARM_PROD") {
-                ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
+                ApacheImage = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
                 // }
             }
         }
     }
 
     stage('Push Apache docker image to private repository'){
-        docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
-            docker.withServer('${env.DOCKER_SWARM_PROD}') {
-                ApacheMicroservice.push()
-                ApacheMicroservice.push("latest")
-            }
+        steps {
+            script {
+                 docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
+                     // docker.withServer('${env.DOCKER_SWARM_PROD}') {
+                     ApacheImage.push()
+                     ApacheImage.push("latest")
+                     //}
         }
     }
 
