@@ -51,11 +51,6 @@ node {
             sh 'cat stack-deploy.yml'
     }
 
-    stage('Deploy LAMP stack to Docker Swarm'){
-    //        docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
-                sh 'docker stack deploy -c stack-deploy.yml LAMP'
-    //        }
-    }
 
 // I can ONLY use "docker service create" on Swarm
 //    stage('Deploy Apache Service into Docker Swarm'){
@@ -82,12 +77,11 @@ node {
             sh 'cat stack-deploy.yml'
     }
 
-    stage('Deploy images to Docker Swarm'){
-            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+    stage('Deploy LAMP stack to Docker Swarm'){
+    //        docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
                 sh 'docker stack deploy -c stack-deploy.yml LAMP'
-            }
+    //        }
     }
-
   
 //    stage("Apache Unit Test") {
 //        try {
