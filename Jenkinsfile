@@ -36,6 +36,7 @@ node {
     }
 
     stage('Create Docker Compose'){
+            sh 'docker version'
             sh 'echo Create docker-compose.yml'
             sh './create-docker-compose.sh'                
             sh 'cat stack-deploy.yml'
