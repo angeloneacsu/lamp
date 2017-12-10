@@ -27,13 +27,17 @@ node {
 
 // Apache Stages
     stage('Build Apache docker image') {
-            ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
+            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+                ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
+            }
     }
 
     stage('Push Apache docker image to private repository'){
         docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
-            ApacheMicroservice.push()
-            ApacheMicroservice.push("latest")
+            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+                ApacheMicroservice.push()
+                ApacheMicroservice.push("latest")
+            }
         }
     }
 
@@ -48,14 +52,14 @@ node {
     }
 
     stage('Deploy images to Docker Swarm'){
-            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
                 sh 'DOCKER_HOST=${env.DOCKER_HOST} docker stack deploy -c stack-deploy.yml LAMP'
             }
     }
 
 // I can ONLY use "docker service create" on Swarm
 //    stage('Deploy Apache Service into Docker Swarm'){
-//            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+//            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
 //                sh "docker service create --name lamp-apache --publish 50080:80 ${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}"
 //            }
 //    }
@@ -79,7 +83,7 @@ node {
     }
 
     stage('Deploy images to Docker Swarm'){
-            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
                 sh 'docker stack deploy -c stack-deploy.yml LAMP'
             }
     }
