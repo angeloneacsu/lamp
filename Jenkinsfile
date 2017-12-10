@@ -13,13 +13,18 @@ node {
         checkout scm
     }
   
-    stage("Building Apache Docker Image") {
-        try {
-            sh "./apache/docker_build.sh"
-        }
-        catch(e) {
-            error "Building Docker Image failed"
-        }
+    //stage("Building Apache Docker Image") {
+    //    try {
+    //        sh "./apache/docker_build.sh"
+    //    }
+    //    catch(e) {
+    //        error "Building Docker Image failed"
+    //    }
+    //}
+
+    stage('Build Apache docker image') {
+            def customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
+            //def customApache = docker.build("${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
     }
 
   
@@ -45,11 +50,6 @@ node {
         catch(e) {
             error "MySQL Unit-Test failed"
         }
-    }
-
-    stage('Build Apache docker image') {
-            def customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
-            //def customApache = docker.build("${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
     }
 
     stage('Push images to private repository'){
