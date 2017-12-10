@@ -6,7 +6,7 @@ env.CLIENT = 'kilabs'
 env.PROJECT = 'lamp'
 
 node {
-    def app
+    def customApache
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -24,7 +24,13 @@ node {
 
     stage('Build Apache docker image') {
             def customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
-            //def customApache = docker.build("${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
+    }
+
+    stage('Push Apahce image to private repository'){
+        docker.withRegistry('http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}') {
+            customApache.push()
+            customApache.push("latest")
+        }
     }
 
   
@@ -49,13 +55,6 @@ node {
         }
         catch(e) {
             error "MySQL Unit-Test failed"
-        }
-    }
-
-    stage('Push images to private repository'){
-        docker.withRegistry('http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}') {
-            customApache.push("${env.BUILD_ID}")
-            customApache.push("latest")
         }
     }
 
