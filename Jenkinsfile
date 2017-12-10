@@ -27,7 +27,7 @@ node {
     }
 
     stage('Push Apache docker image to private repository'){
-        docker.withRegistry("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
+        docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
             customApache.push()
             customApache.push("latest")
         }
