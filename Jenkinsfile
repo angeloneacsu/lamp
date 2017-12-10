@@ -28,11 +28,9 @@ node {
 // Apache Stages
     stage('Build Apache docker image') {
         steps {
-            script {
                 // docker.withServer("$DOCKER_SWARM_PROD") {
                 ApacheImage = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
                 // }
-            }
         }
     }
 
