@@ -37,20 +37,10 @@ node {
     stage('Push Apache docker image to private repository'){
                  docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
                      // docker.withServer('${env.DOCKER_SWARM_PROD}') {
-                     ApacheImage.push(rev)
+                     ApacheImage.push()
                      ApacheImage.push("latest")
                      //}
                 }
-    }
-
-//
-// "docker stack deploy" requires ONLY API version 1.25. I have API >= 1.32
-//
-    stage('Create Docker Compose'){
-            sh 'docker version'
-            sh 'echo Create docker-compose.yml'
-            sh './create-docker-compose.sh'                
-            sh 'cat stack-deploy.yml'
     }
 
 
@@ -74,6 +64,14 @@ node {
     }
 
     stage('Create Docker Compose'){
+            sh 'echo Create docker-compose.yml'
+            sh './create-docker-compose.sh'                
+            sh 'cat stack-deploy.yml'
+    }
+
+
+    stage('Create Docker Compose'){
+            sh 'docker version'
             sh 'echo Create docker-compose.yml'
             sh './create-docker-compose.sh'                
             sh 'cat stack-deploy.yml'
