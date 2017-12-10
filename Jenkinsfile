@@ -1,7 +1,7 @@
 echo("Hello from Pipeline");
 
-env.DOCKER_SWARM_PROD = 'docker.angeloneacsu.com'
-env.DOCKER_HOST = 'docker.angeloneacsu.com'
+env.DOCKER_SWARM_PROD = 'tcp://docker.angeloneacsu.com:2375'
+//env.DOCKER_HOST = 'tcp://docker.angeloneacsu.com:2375'
 env.DOCKER_REPO = 'docker.angeloneacsu.com'
 env.DOCKER_REPO_PORT = '5000'
 env.CLIENT = 'kilabs'
@@ -27,14 +27,14 @@ node {
 
 // Apache Stages
     stage('Build Apache docker image') {
-            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+            docker.withServer('${env.DOCKER_SWARM_PROD}') {
                 ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
             }
     }
 
     stage('Push Apache docker image to private repository'){
         docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
-            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+            docker.withServer('${env.DOCKER_SWARM_PROD}') {
                 ApacheMicroservice.push()
                 ApacheMicroservice.push("latest")
             }
@@ -53,7 +53,7 @@ node {
 
     stage('Deploy images to Docker Swarm'){
             docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
-                sh 'DOCKER_HOST=${env.DOCKER_HOST} docker stack deploy -c stack-deploy.yml LAMP'
+                sh 'DOCKER_HOST=${env.DOCKER_SWARM_PROD} docker stack deploy -c stack-deploy.yml LAMP'
             }
     }
 
