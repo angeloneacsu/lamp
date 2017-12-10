@@ -27,9 +27,13 @@ node {
 
 // Apache Stages
     stage('Build Apache docker image') {
-           // docker.withServer("$DOCKER_SWARM_PROD") {
+        steps {
+            script {
+                // docker.withServer("$DOCKER_SWARM_PROD") {
                 ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
-           // }
+                // }
+            }
+        }
     }
 
     stage('Push Apache docker image to private repository'){
