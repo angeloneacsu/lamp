@@ -27,9 +27,9 @@ node {
 
 // Apache Stages
     stage('Build Apache docker image') {
-            docker.withServer("$DOCKER_SWARM_PROD") {
+           // docker.withServer("$DOCKER_SWARM_PROD") {
                 ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
-            }
+           // }
     }
 
     stage('Push Apache docker image to private repository'){
@@ -52,9 +52,9 @@ node {
     }
 
     stage('Deploy images to Docker Swarm'){
-            docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+    //        docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
                 sh 'DOCKER_HOST=$DOCKER_SWARM_PROD docker stack deploy -c stack-deploy.yml LAMP'
-            }
+    //        }
     }
 
 // I can ONLY use "docker service create" on Swarm
