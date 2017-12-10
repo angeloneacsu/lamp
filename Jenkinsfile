@@ -14,6 +14,8 @@ node {
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
         checkout scm
+        sh 'git rev-parse HEAD > .rev'
+        rev = readFile('.rev').trim()
     }
   
     //stage("Building Apache Docker Image") {
@@ -35,7 +37,7 @@ node {
     stage('Push Apache docker image to private repository'){
                  docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
                      // docker.withServer('${env.DOCKER_SWARM_PROD}') {
-                     ApacheImage.push()
+                     ApacheImage.push(rev)
                      ApacheImage.push("latest")
                      //}
                 }
