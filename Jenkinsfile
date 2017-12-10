@@ -44,6 +44,8 @@ node {
                      ApacheImage.push()
                      ApacheImage.push("latest")
                      //}
+                }
+            }
         }
     }
 
