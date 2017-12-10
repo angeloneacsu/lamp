@@ -79,6 +79,7 @@ node {
 
     stage('Deploy LAMP stack to Docker Swarm'){
     //        docker.withServer('tcp://${env.DOCKER_SWARM_PROD}:2376') {
+                //sh 'docker stack rm LAMP'
                 sh 'docker stack deploy -c stack-deploy.yml LAMP'
     //        }
     }
