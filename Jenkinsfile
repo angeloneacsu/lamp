@@ -1,7 +1,7 @@
 echo("Hello from Pipeline");
 
 env.DOCKER_SWARM_PROD = 'docker.angeloneacsu.com'
-env.DOCKER_HOST = 'tcp://docker.angeloneacsu.com:2375'
+env.DOCKER_HOST = 'docker.angeloneacsu.com'
 env.DOCKER_REPO = 'docker.angeloneacsu.com'
 env.DOCKER_REPO_PORT = '5000'
 env.CLIENT = 'kilabs'
