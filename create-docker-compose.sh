@@ -1,9 +1,11 @@
+#!/bin/sh
+
 cat > stack-deploy.yml <<EOF
 version: "3.3"
 
 services:
    backend:
-      image: ${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/lamp-mysql:latest
+      image: ${DOCKER_REPO}:${DOCKER_REPO_PORT}/${CLIENT}/lamp-mysql:latest
       ports:
          - "50080:80"
       deploy:
@@ -11,7 +13,7 @@ services:
           limits:
             memory: 512M
    frontend:
-      image: ${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/lamp-apache:latest
+      image: ${DOCKER_REPO}:${DOCKER_REPO_PORT}/${CLIENT}/lamp-apache:latest
       ports:
          - "53306:3306"
       deploy:
