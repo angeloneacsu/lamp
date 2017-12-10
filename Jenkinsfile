@@ -33,6 +33,14 @@ node {
         }
     }
 
+    stage('Deploy images to Docker Swarm'){
+            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+                sh 'echo Create docker-compose.yml'
+                sh './create-docker-compose.sh'                
+                sh 'cat create-docker-compose.sh'
+            }
+    }
+
   
     stage("Apache Unit Test") {
         try {
@@ -44,27 +52,19 @@ node {
     }
   
     
-    stage("MySQL Unit Test") {
-        try {
-            docker.image('mysql:5').withRun('-e "MYSQL_ROOT_PASSWORD=pass" -p 53306:3306') { c ->
-                sh 'while ! mysqladmin ping -h docker.angeloneacsu.com --user=root --password=pass -P 53306;do sleep 3; done'
-                docker.image('mysql:5').inside("--link ${c.id}:db") {
-                    sh 'mysql/unit_test.sh'
-                }
-            }
-        }
-        catch(e) {
-            error "MySQL Unit-Test failed"
-        }
-    }
-
-    stage('Deploy images to Docker Swarm'){
-            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-                sh 'echo Create docker-compose.yml'
-                sh './create-docker-compose.sh'                
-                sh 'cat create-docker-compose.sh'
-            }
-    }
+//    stage("MySQL Unit Test") {
+//        try {
+//            docker.image('mysql:5').withRun('-e "MYSQL_ROOT_PASSWORD=pass" -p 53306:3306') { c ->
+//                sh 'while ! mysqladmin ping -h docker.angeloneacsu.com --user=root --password=pass -P 53306;do sleep 3; done'
+//                docker.image('mysql:5').inside("--link ${c.id}:db") {
+//                    sh 'mysql/unit_test.sh'
+//                }
+//            }
+//        }
+//        catch(e) {
+//            error "MySQL Unit-Test failed"
+//        }
+//    }
 
 }
 
