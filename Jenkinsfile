@@ -1,11 +1,17 @@
 echo("Hello from Pipeline");
 
 env.DOCKER_REPO = 'docker.angeloneacsu.com'
+env.DOCKER_REPO_PORT = '5000'
 env.CLIENT = 'kilabs'
 env.PROJECT = 'lamp'
 
 node {
-    checkout scm
+    def app
+
+    stage('Clone repository') {
+        /* Let's make sure we have the repository cloned to our workspace */
+        checkout scm
+    }
   
     stage("Building Apache Docker Image") {
         try {
@@ -41,16 +47,22 @@ node {
         }
     }
 
+    stage('Build Apache docker image') {
+            //def customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
+            def customApache = docker.build("${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
+    }
+
     stage('Push images to private repository'){
-        def customApache = docker.build("${env.DOCKER_REPO}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}")
-        customApache.push()
-        customApache.push('latest')
+        docker.withRegistry('http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}') {
+            customApache.push("${env.BUILD_ID}")
+            customApache.push("latest")
+        }
     }
 
     stage('Deploy images to Docker Swarm'){
-        docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-             sh 'echo test deploy'
-        }
+            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+                sh 'echo test deploy'
+            }
     }
 
 }
