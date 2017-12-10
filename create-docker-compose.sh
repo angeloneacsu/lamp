@@ -1,5 +1,7 @@
 #!/bin/sh
 
+env
+
 cat > stack-deploy.yml <<EOF
 version: "3.3"
 
