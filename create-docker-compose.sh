@@ -23,3 +23,6 @@ services:
           limits:
             memory: 128M
 EOF
+
+cat stack-deploy.yml
+
