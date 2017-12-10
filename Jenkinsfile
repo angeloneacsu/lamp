@@ -60,7 +60,9 @@ node {
 
     stage('Deploy images to Docker Swarm'){
             docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-                sh 'echo test deploy'
+                sh 'echo Create docker-compose.yml'
+                sh './create-docker-compose.sh'                
+                sh 'cat create-docker-compose.sh'
             }
     }
 

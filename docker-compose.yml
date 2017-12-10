@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+   backend:
+      image: docker.angeloneacsu.com:5000/kilabs/lamp-mysql:latest
+      ports:
+         - "50080:80"
+      deploy:
+        resources:
+          limits:
+            memory: 512M
+   frontend:
+      image: docker.angeloneacsu.com:5000/kilabs/lamp-apache:latest
+      ports:
+         - "53306:3306"
+      deploy:
+        resources:
+          limits:
+            memory: 128M
+
+   
