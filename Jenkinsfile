@@ -6,7 +6,8 @@ env.CLIENT = 'kilabs'
 env.PROJECT = 'lamp'
 
 node {
-    def customApache
+    def ApacheMicroservice
+    def MysqlMicroservice
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -22,34 +23,63 @@ node {
     //    }
     //}
 
+// Apache Stages
     stage('Build Apache docker image') {
-            customApache = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
+            ApacheMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-apache:${env.BUILD_ID}", "-f apache/Dockerfile apache/")
     }
 
     stage('Push Apache docker image to private repository'){
         docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
-            customApache.push()
-            customApache.push("latest")
+            ApacheMicroservice.push()
+            ApacheMicroservice.push("latest")
         }
+    }
+
+    stage('Create Docker Compose'){
+            sh 'echo Create docker-compose.yml'
+            sh './create-docker-compose.sh'                
+            sh 'cat stack-deploy.yml'
     }
 
     stage('Deploy images to Docker Swarm'){
             docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
-                sh 'echo Create docker-compose.yml'
-                sh './create-docker-compose.sh'                
-                sh 'cat create-docker-compose.sh'
+                sh 'docker stack deploy -c stack-deploy.yml LAMP'
+            }
+    }
+
+// MySQL Stages
+    stage('Build MySQL docker image') {
+            MySQLMicroservice = docker.build("${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}/${env.CLIENT}/${env.PROJECT}-mysql:${env.BUILD_ID}", "-f mysql/Dockerfile mysql/")
+    }
+
+    stage('Push MySQL docker image to private repository'){
+        docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
+            MySQLMicroservice.push()
+            MySQLMicroservice.push("latest")
+        }
+    }
+
+    stage('Create Docker Compose'){
+            sh 'echo Create docker-compose.yml'
+            sh './create-docker-compose.sh'                
+            sh 'cat stack-deploy.yml'
+    }
+
+    stage('Deploy images to Docker Swarm'){
+            docker.withServer('tcp://${env.DOCKER_SWARM_MASTER}:2376') {
+                sh 'docker stack deploy -c stack-deploy.yml LAMP'
             }
     }
 
   
-    stage("Apache Unit Test") {
-        try {
-            sh "./apache/unit_test.sh"
-        }
-        catch(e) {
-            error "Unit Test failed"
-        }
-    }
+//    stage("Apache Unit Test") {
+//        try {
+//            sh "./apache/unit_test.sh"
+//        }
+//        catch(e) {
+//            error "Unit Test failed"
+//        }
+//    }
   
     
 //    stage("MySQL Unit Test") {
