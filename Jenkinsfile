@@ -33,16 +33,12 @@ node {
     }
 
     stage('Push Apache docker image to private repository'){
-        steps {
-            script {
                  docker.withRegistry("http://${env.DOCKER_REPO}:${env.DOCKER_REPO_PORT}") {
                      // docker.withServer('${env.DOCKER_SWARM_PROD}') {
                      ApacheImage.push()
                      ApacheImage.push("latest")
                      //}
                 }
-            }
-        }
     }
 
 //
